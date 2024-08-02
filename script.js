@@ -22,11 +22,14 @@ document.addEventListener("DOMContentLoaded", function() {
     };
 
     document.getElementById("addRowBtn").addEventListener("click", addRow);
+    document.getElementById("saveBtn").addEventListener("click", saveData);
+    document.getElementById("exportBtn").addEventListener("click", exportToExcel);
     document.getElementById("filterInput").addEventListener("input", filterTable);
     document.getElementById("statusFilter").addEventListener("change", filterTable);
     document.getElementById("supervisorFilter").addEventListener("input", filterTable);
 
     createHeader();
+    loadData();
     createRows();
 
     // Função para gerar a linha de cabeçalho com os dias do mês
@@ -180,6 +183,46 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         }
+    }
+
+    function saveData() {
+        const data = [];
+        const rows = table.getElementsByTagName("tr");
+        for (let i = 0; i < rows.length; i++) {
+            const cells = rows[i].getElementsByTagName("td");
+            const rowData = [];
+            for (let j = 0; j < cells.length; j++) {
+                const input = cells[j].querySelector("input, select");
+                if (input) {
+                    rowData.push(input.value);
+                }
+            }
+            data.push(rowData);
+        }
+        localStorage.setItem("attendanceData", JSON.stringify(data));
+        alert("Informações salvas com sucesso!");
+    }
+
+    function loadData() {
+        const data = JSON.parse(localStorage.getItem("attendanceData"));
+        if (data) {
+            for (let i = 0; i < data.length; i++) {
+                const row = table.insertRow();
+                for (let j = 0; j < data[i].length; j++) {
+                    const cell = row.insertCell();
+                    const input = document.createElement(data[i][j].includes("Selecione") ? "select" : "input");
+                    input.value = data[i][j];
+                    cell.appendChild(input);
+                }
+            }
+        }
+    }
+
+    function exportToExcel() {
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.table_to_sheet(document.getElementById("attendanceTable"));
+        XLSX.utils.book_append_sheet(wb, ws, "Presença");
+        XLSX.writeFile(wb, "presenca.xlsx");
     }
 });
 

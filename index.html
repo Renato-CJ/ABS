@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controle de Presença</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -21,6 +22,8 @@
             </select>
             <input type="text" id="supervisorFilter" placeholder="Buscar por Supervisor...">
             <button id="addRowBtn">Adicionar Funcionário</button>
+            <button id="saveBtn">Salvar Informações</button>
+            <button id="exportBtn">Exportar para Excel</button>
             <div class="table-container">
                 <table id="attendanceTable">
                     <thead>
