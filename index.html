@@ -1,65 +1,102 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Controle de Presença</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
+    <title>Acompanhamento In Loco</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="main-content">
-            <h1>Controle Mensal de Presença e Falta</h1>
-            <input type="text" id="filterInput" placeholder="Buscar Funcionário...">
-            <select id="statusFilter">
-                <option value="">Todos</option>
-                <option value="ativo">Ativo</option>
-                <option value="desligado">Desligado</option>
-                <option value="afastado">Afastado</option>
-                <option value="ferias">Férias</option>
-                <option value="remanejado">Remanejado</option>
-            </select>
-            <input type="text" id="supervisorFilter" placeholder="Buscar por Supervisor...">
-            <button id="addRowBtn">Adicionar Funcionário</button>
-            <button id="saveBtn">Salvar Informações</button>
-            <button id="exportBtn">Exportar para Excel</button>
-            <div class="table-container">
-                <table id="attendanceTable">
-                    <thead>
-                        <tr>
-                            <th class="sticky-row sticky-col">Nome do funcionário</th>
-                            <th class="sticky-row">Login</th>
-                            <th class="sticky-row">CPF</th>
-                            <th class="sticky-row">Status</th>
-                            <th class="sticky-row">Supervisor</th>
-                            <!-- Colunas para os dias do mês -->
-                            <!-- Gerar automaticamente com JavaScript -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Linhas para os funcionários -->
-                        <!-- Gerar automaticamente com JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="summary">
-            <h2>Resumo de Presença</h2>
-            <table id="summaryTable">
-                <thead>
-                    <tr>
-                        <th>Status</th>
-                        <th>Qtd</th>
-                        <th>%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Linhas do resumo -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <script src="script.js"></script>
+
+<h2>Acompanhamento In Loco</h2>
+
+<table id="operadoresTable">
+    <thead>
+        <tr>
+            <th>Nome do Operador</th>
+            <th>Monitor</th>
+            <th>Supervisor</th>
+            <th>Status</th>
+            <th>Data</th>
+            <th>Segue os procedimentos</th>
+            <th>Foi receptivo?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Linhas da tabela serão inseridas aqui via JavaScript -->
+    </tbody>
+</table>
+
+<div class="chart-container">
+    <canvas id="operadoresChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const data = [
+            // Aqui os dados da planilha serão convertidos em formato JSON e adicionados
+        ];
+
+        // Preenchendo a tabela com os dados
+        const tableBody = document.querySelector('#operadoresTable tbody');
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.nome}</td>
+                <td>${item.monitor}</td>
+                <td>${item.supervisor}</td>
+                <td>${item.status}</td>
+                <td>${item.data}</td>
+                <td>${item.segueProcedimentos}</td>
+                <td>${item.foiReceptivo}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // Gerando gráfico comparativo
+        const ctx = document.getElementById('operadoresChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.map(item => item.nome),
+                datasets: [{
+                    label: 'Segue os Procedimentos (Sim/Não)',
+                    data: data.map(item => item.segueProcedimentos === 'Sim' ? 1 : 0),
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
